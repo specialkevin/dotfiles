@@ -3,6 +3,7 @@
     email = special.kevin@gmail.com
 [core]
     editor = "nvim"
+    pager = "delta"
 [hub]
     host = github.com
 [alias]
@@ -12,10 +13,12 @@
     oops = "commit --amend --no-edit"
     it = "!git init && git commit -m 'root' --allow-empty"
     shorty = "status --short -branch"
-[pager]
-    diff = diff-so-fancy | less --tabs=1,5
-    show = diff-so-fancy | less --tabs=1.5
 
 #shortcuts for various git endpoints
 [url "ssh://git@stash.ondeck.tools:7999/"]
     insteadOf = "odl:"
+
+[delta]
+    syntax-theme = Nord
+    line-numbers = True
+    side-by-side = True
