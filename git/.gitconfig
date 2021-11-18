@@ -1,20 +1,32 @@
 [user]
     name = Kevin Harriss
     email = special.kevin@gmail.com
+
 [core]
     editor = "nvim"
     pager = "delta"
-[hub]
-    host = github.com
-[alias]
-    up = "!git remote update --prune && git rebase origin/main"
-    mastersync = "!git remote update --prune && git rebase origin/master"
-    copr = "!sh -c 'echo usage: git copr pr_number && git fetch origin pull/${0} && git checkout ${0}'"
-    oops = "commit --amend --no-edit"
-    it = "!git init && git commit -m 'root' --allow-empty"
-    shorty = "status --short -branch"
 
-#shortcuts for various git endpoints
+[alias]
+    #list all git aliases configured
+    aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+
+    # Git Helper Functions, useful in scripts
+    branch-name = !git branch | grep "^*" | awk '{ print $2 }'
+
+    # Repo Stats / Info
+    churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort -r | awk 'BEGIN {print "count,file"} {print $1 "," $2} NR==10{exit}'
+    monthly-contributors = !git shortlog --summary --numbered --no-merges --since=\"1, $( date +%b) $( date +%Y)\"
+    contributors = shortlog --summary --numbered --no-merges
+
+    # Repo Interaction
+    export = archive -o latest.tar.gz -9 --prefix=latest/
+    changelog = log origin..HEAD --format='* %s%n%w(,4,4)%+b'
+    workon = ! "f(){ git fetch && git checkout -b "$1" $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/@@"); };f"
+    refresh = ! "z(){ git fetch && git stash && git rebase $(git symbolic-ref refs/remotes/origin/HEAD | sed "s@^refs/remotes/@@") && git stash pop; };z"
+    cleanup-merged = ! "f(){ git fetch && git branch --merged | grep -v '* ' | xargs git branch --delete; };f"
+    oops = "commit --amend --no-edit"
+    started = "!git init && git commit -m 'root' --allow-empty"
+
 [url "ssh://git@stash.ondeck.tools:7999/"]
     insteadOf = "odl:"
 
@@ -22,3 +34,6 @@
     syntax-theme = Nord
     line-numbers = True
     side-by-side = True
+
+[hub]
+    host = github.com
